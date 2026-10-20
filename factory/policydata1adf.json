@@ -1,0 +1,15 @@
+{
+	"name": "policydata1adf",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "cfae2aed-c646-4ed4-a8f8-2df1fb1fae3b",
+		"tenantId": "19bf7928-627e-4136-be75-432dcae3598a"
+	}
+}
