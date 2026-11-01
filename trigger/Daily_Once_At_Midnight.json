@@ -9,6 +9,12 @@
 					"referenceName": "Incremental-Ingest_Agent_Data",
 					"type": "PipelineReference"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "Incremental-Ingest_Claim_Data",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "ScheduleTrigger",
