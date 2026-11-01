@@ -756,6 +756,13 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "Incremental-Ingest_Claim_Data",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -777,7 +784,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Incremental-Ingest_Agent_Data')]"
+				"[concat(variables('factoryId'), '/pipelines/Incremental-Ingest_Agent_Data')]",
+				"[concat(variables('factoryId'), '/pipelines/Incremental-Ingest_Claim_Data')]"
 			]
 		}
 	]
