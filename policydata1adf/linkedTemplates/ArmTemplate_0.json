@@ -763,6 +763,13 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {}
+					},
+					{
+						"pipelineReference": {
+							"referenceName": "Ingest_Branch_Data_to_ADLS",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -785,7 +792,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Incremental-Ingest_Agent_Data')]",
-				"[concat(variables('factoryId'), '/pipelines/Incremental-Ingest_Claim_Data')]"
+				"[concat(variables('factoryId'), '/pipelines/Incremental-Ingest_Claim_Data')]",
+				"[concat(variables('factoryId'), '/pipelines/Ingest_Branch_Data_to_ADLS')]"
 			]
 		}
 	]
