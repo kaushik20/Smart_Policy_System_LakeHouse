@@ -2,7 +2,9 @@
 
 An end-to-end insurance data platform on Azure. **Azure Data Factory** ingests policy, customer, claim, agent and branch data into **ADLS Gen2**. **Azure Databricks (serverless, Unity Catalog)** refines it through a **Bronze → Silver → Gold** medallion architecture, and the result feeds a **Databricks AI/BI dashboard** for business KPIs such as premium, claims and loss ratio.
 
-![Insurance Analytics dashboard](docs/images/dashboard_overview.png)
+![Insurance Analytics dashboard]
+<img width="2160" height="2126" alt="dashboard_overview" src="https://github.com/user-attachments/assets/0a2dbdb7-50b5-4eec-b35b-2484dc76e9fb" />
+
 
 | KPI (snapshot) | Value |
 |---|---|
