@@ -1,0 +1,837 @@
+{
+  "datasets": [
+    {
+      "name": "claims_status",
+      "displayName": "Claims by Policy Type and Status",
+      "config": {
+        "version": "1.1",
+        "source": "policysystemdatabricks.gold.claims_by_policy_type_and_status",
+        "dimensions": [
+          {
+            "expr": "policy_type"
+          },
+          {
+            "expr": "claim_status"
+          }
+        ],
+        "measures": [
+          {
+            "name": "claim_count",
+            "expr": "SUM(claim_count)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sales_monthly",
+      "displayName": "Sales by Policy Type and Month",
+      "config": {
+        "version": "1.1",
+        "source": "policysystemdatabricks.gold.sales_by_policy_type_and_month",
+        "dimensions": [
+          {
+            "expr": "policy_type"
+          },
+          {
+            "expr": "sales_month"
+          }
+        ],
+        "measures": [
+          {
+            "name": "policies_sold",
+            "expr": "SUM(policies_sold)"
+          },
+          {
+            "name": "total_premium",
+            "expr": "SUM(total_premium)",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "abbreviation": "compact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "claim_analysis",
+      "displayName": "Claim Analysis by Policy Type",
+      "config": {
+        "version": "1.1",
+        "source": "policysystemdatabricks.gold.claim_analysis_by_policy_type",
+        "dimensions": [
+          {
+            "expr": "policy_type"
+          }
+        ],
+        "measures": [
+          {
+            "name": "total_policies",
+            "expr": "SUM(policies)"
+          },
+          {
+            "name": "total_premium",
+            "expr": "SUM(total_premium)",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "abbreviation": "compact",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "total_claims_paid",
+            "expr": "SUM(total_claim_amount)",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "abbreviation": "compact",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "loss_ratio",
+            "expr": "SUM(total_claim_amount) / SUM(total_premium)",
+            "format": {
+              "type": "percentage",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 1.0
+              }
+            }
+          },
+          {
+            "name": "claim_count",
+            "expr": "SUM(claim_count)"
+          },
+          {
+            "name": "avg_claim_amount",
+            "expr": "SUM(total_claim_amount) / SUM(claim_count)",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD",
+              "decimalPlaces": {
+                "type": "exact",
+                "places": 2.0
+              }
+            }
+          },
+          {
+            "name": "min_claim_amount",
+            "expr": "MIN(min_claim_amount)",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD"
+            }
+          },
+          {
+            "name": "max_claim_amount",
+            "expr": "MAX(max_claim_amount)",
+            "format": {
+              "type": "currency",
+              "currencyCode": "USD"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "7c6ce492",
+      "displayName": "Claims Detail",
+      "queryLines": [
+        "   SELECT p.policy_type, c.claim_id, c.claim_amount, c.claim_status\r\n",
+        "   FROM policysystemdatabricks.silver.claim c\r\n",
+        "   JOIN policysystemdatabricks.silver.policydata p ON c.policy_id = p.policy_id"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "ac2b8ed0",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "kpi_policies",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claim_analysis",
+                  "fields": [
+                    {
+                      "name": "measure(total_policies)",
+                      "expression": "MEASURE(`total_policies`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Total Policies",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_policies)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_premium",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claim_analysis",
+                  "fields": [
+                    {
+                      "name": "measure(total_premium)",
+                      "expression": "MEASURE(`total_premium`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Total Premium",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_premium)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "kpi_claims_paid",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claim_analysis",
+                  "fields": [
+                    {
+                      "name": "measure(total_claims_paid)",
+                      "expression": "MEASURE(`total_claims_paid`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Total Claims Paid",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(total_claims_paid)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 3,
+            "width": 6,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "premium_trend",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "sales_monthly",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "monthly(sales_month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `sales_month`)"
+                    },
+                    {
+                      "name": "measure(total_premium)",
+                      "expression": "MEASURE(`total_premium`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Total Premium by Month",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(sales_month)",
+                  "displayName": "Sales Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(total_premium)",
+                  "displayName": "Total Premium",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "policy_type",
+                  "displayName": "Policy Type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "claims_by_status",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claims_status",
+                  "fields": [
+                    {
+                      "name": "claim_status",
+                      "expression": "`claim_status`"
+                    },
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "measure(claim_count)",
+                      "expression": "MEASURE(`claim_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Claim Count by Policy Type and Status",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "policy_type",
+                  "displayName": "Policy Type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(claim_count)",
+                  "displayName": "Claim Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "claim_status",
+                  "displayName": "Claim Status",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 20,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "policies_sold_trend",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "sales_monthly",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "monthly(sales_month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `sales_month`)"
+                    },
+                    {
+                      "name": "measure(policies_sold)",
+                      "expression": "MEASURE(`policies_sold`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Policies Sold by Month"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(sales_month)",
+                  "displayName": "Sales Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(policies_sold)",
+                  "displayName": "Policies Sold",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "policy_type",
+                  "displayName": "Policy Type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "loss_ratio_bar",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claim_analysis",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "measure(loss_ratio)",
+                      "expression": "MEASURE(`loss_ratio`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Loss Ratio by Policy Type",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "annotations": [
+                {
+                  "type": "horizontal-line",
+                  "encodings": {
+                    "type": "aggregate",
+                    "y": {
+                      "total": {
+                        "fn": "avg"
+                      }
+                    },
+                    "label": {
+                      "value": "Avg: {{ @ }}"
+                    }
+                  }
+                }
+              ],
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "policy_type",
+                  "displayName": "Policy Type",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(loss_ratio)",
+                  "displayName": "Loss Ratio",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "policy_type",
+                  "displayName": "Policy Type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "claim_stats_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7c6ce492",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "min(claim_amount)",
+                      "expression": "MIN(`claim_amount`)"
+                    },
+                    {
+                      "name": "q1(claim_amount)",
+                      "expression": "PERCENTILE(`claim_amount`, 0.25)"
+                    },
+                    {
+                      "name": "median(claim_amount)",
+                      "expression": "MEDIAN(`claim_amount`)"
+                    },
+                    {
+                      "name": "q3(claim_amount)",
+                      "expression": "PERCENTILE(`claim_amount`, 0.75)"
+                    },
+                    {
+                      "name": "max(claim_amount)",
+                      "expression": "MAX(`claim_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Claim Amount Distribution by Policy Type",
+                  "fields": []
+                }
+              },
+              "version": 3,
+              "widgetType": "box",
+              "encodings": {
+                "x": {
+                  "fieldName": "policy_type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "whiskerStart": {
+                    "fieldName": "min(claim_amount)"
+                  },
+                  "boxStart": {
+                    "fieldName": "q1(claim_amount)"
+                  },
+                  "boxMid": {
+                    "fieldName": "median(claim_amount)"
+                  },
+                  "boxEnd": {
+                    "fieldName": "q3(claim_amount)"
+                  },
+                  "whiskerEnd": {
+                    "fieldName": "max(claim_amount)"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 26,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "ad3b07db",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "claim_analysis",
+                  "fields": [
+                    {
+                      "name": "measure(loss_ratio)",
+                      "expression": "MEASURE(`loss_ratio`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": {
+                  "value": "Overall Loss Ratio",
+                  "fields": []
+                }
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(loss_ratio)",
+                  "rowNumber": 0
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 6,
+            "height": 3
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "global_filters",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "policy_type_filter",
+            "queries": [
+              {
+                "name": "dashboards/01f1d6b5830011daad326a4af5dd8695/datasets/01f1d6b5f87b1ab89f165f57a1bc85bb_policy_type",
+                "query": {
+                  "datasetName": "claim_analysis",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "policy_type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1d6b5830011daad326a4af5dd8695/datasets/01f1d6b5f82e106a882f53e81786e2e3_policy_type",
+                "query": {
+                  "datasetName": "sales_monthly",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "policy_type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f1d6b5830011daad326a4af5dd8695/datasets/01f1d6b5f7da131995b1b8e8e1450c33_policy_type",
+                "query": {
+                  "datasetName": "claims_status",
+                  "fields": [
+                    {
+                      "name": "policy_type",
+                      "expression": "`policy_type`"
+                    },
+                    {
+                      "name": "policy_type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Policy Type"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "policy_type",
+                    "queryName": "dashboards/01f1d6b5830011daad326a4af5dd8695/datasets/01f1d6b5f87b1ab89f165f57a1bc85bb_policy_type"
+                  },
+                  {
+                    "fieldName": "policy_type",
+                    "queryName": "dashboards/01f1d6b5830011daad326a4af5dd8695/datasets/01f1d6b5f82e106a882f53e81786e2e3_policy_type"
+                  },
+                  {
+                    "fieldName": "policy_type",
+                    "queryName": "dashboards/01f1d6b5830011daad326a4af5dd8695/datasets/01f1d6b5f7da131995b1b8e8e1450c33_policy_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
