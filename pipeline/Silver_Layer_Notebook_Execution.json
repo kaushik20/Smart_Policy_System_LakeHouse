@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Silver_Branch Implementation",
-				"type": "DatabricksNotebook",
+				"name": "Run_PolicySystem_Medallion",
+				"type": "DatabricksJob",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -15,115 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/kaushikchintalapudi@gmail.com/SilverLayer Implementation/Silver_Branch Implementation"
-				},
-				"linkedServiceName": {
-					"referenceName": "Azure_Databricks_LS",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Silver_Customer Implementation",
-				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "Silver_Branch Implementation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": "/Users/kaushikchintalapudi@gmail.com/SilverLayer Implementation/Silver_Customer Implementation"
-				},
-				"linkedServiceName": {
-					"referenceName": "Azure_Databricks_LS",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Silver_Agent Implementation",
-				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "Silver_Customer Implementation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": "/Users/kaushikchintalapudi@gmail.com/SilverLayer Implementation/Silver_Agent Implementation"
-				},
-				"linkedServiceName": {
-					"referenceName": "Azure_Databricks_LS",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Silver_Policy Implementation",
-				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "Silver_Agent Implementation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": "/Users/kaushikchintalapudi@gmail.com/SilverLayer Implementation/Silver_PolicyData Implementation"
-				},
-				"linkedServiceName": {
-					"referenceName": "Azure_Databricks_LS",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Silver_Claims Implementation",
-				"type": "DatabricksNotebook",
-				"dependsOn": [
-					{
-						"activity": "Silver_Policy Implementation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"notebookPath": "/Users/kaushikchintalapudi@gmail.com/SilverLayer Implementation/Silver_Claim Implementation"
+					"jobId": "569114070648966"
 				},
 				"linkedServiceName": {
 					"referenceName": "Azure_Databricks_LS",
