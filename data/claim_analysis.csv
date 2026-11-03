@@ -1,0 +1,4 @@
+policy_type,claim_count,avg_claim_amount,min_claim_amount,max_claim_amount,total_claim_amount,policies,policies_with_claims,total_premium,claim_frequency,loss_ratio,refreshed_at
+Auto,150,97863.53,2283.00,195707.00,14679529.00,169,106,18355960.00,0.6272,0.7997,2026-11-02T10:51:25.884Z
+Unknown,7,91396.86,7494.00,185127.00,639778.00,10,6,822759.00,0.6,0.7776,2026-11-02T10:51:25.884Z
+Health,166,99068.30,2188.00,199706.00,16445338.00,170,105,18291709.00,0.6176,0.8991,2026-11-02T10:51:25.884Z

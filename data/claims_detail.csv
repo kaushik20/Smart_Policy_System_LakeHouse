@@ -1,0 +1,324 @@
+policy_type,claim_id,claim_amount,claim_status
+Auto,10002,160139,Completed
+Auto,10004,110671,Completed
+Health,10009,32499,In Progress
+Auto,10010,48849,In Progress
+Health,10017,22840,In Progress
+Health,10019,102655,Completed
+Auto,10020,112340,Completed
+Auto,10024,88232,In Progress
+Health,10032,15680,In Progress
+Health,10036,120287,Completed
+Unknown,10039,112833,In Progress
+Auto,10040,110103,In Progress
+Auto,10043,60538,In Progress
+Health,10047,92556,In Progress
+Health,10048,130112,In Progress
+Health,10049,2188,Completed
+Health,10052,83275,Completed
+Health,10053,191037,Completed
+Auto,10054,127239,Completed
+Auto,10059,127939,Pending
+Health,10062,125144,In Progress
+Health,10064,87446,In Progress
+Auto,10070,2283,In Progress
+Health,10078,31975,In Progress
+Auto,10079,115225,In Progress
+Auto,10082,60026,Completed
+Health,10089,15738,Completed
+Health,10095,187748,Pending
+Health,10096,60890,Pending
+Health,10097,143732,In Progress
+Auto,10098,178620,Completed
+Auto,10100,137256,Pending
+Auto,10101,163474,In Progress
+Auto,10102,148850,Completed
+Health,10104,44962,In Progress
+Health,10111,31286,Completed
+Auto,10114,192977,In Progress
+Auto,10115,115973,Denied
+Auto,10117,44551,Completed
+Health,10119,32415,In Progress
+Auto,10120,34359,In Progress
+Auto,10123,78767,Completed
+Auto,10127,137919,Completed
+Health,10128,157615,In Progress
+Health,10130,166809,Completed
+Health,10132,57694,In Progress
+Health,10138,173940,Completed
+Auto,10141,60087,In Progress
+Health,10143,56903,In Progress
+Health,10144,46053,Completed
+Auto,10145,148950,In Progress
+Health,10146,66408,Completed
+Health,10148,3441,In Progress
+Health,10154,40640,In Progress
+Health,10157,127606,Completed
+Health,10158,182132,In Progress
+Health,10159,98231,Completed
+Auto,10160,17980,Completed
+Health,10161,154558,In Progress
+Health,10171,179904,Completed
+Health,10172,73008,In Progress
+Health,10178,171035,Completed
+Auto,10182,88012,In Progress
+Auto,10186,3462,Completed
+Auto,10189,42632,Completed
+Health,10193,165792,In Progress
+Auto,10197,77565,Denied
+Auto,10199,33444,Completed
+Health,10200,110992,In Progress
+Auto,10206,171114,Pending
+Auto,10209,72346,Completed
+Health,10211,155272,Completed
+Auto,10213,101193,Denied
+Health,10215,185134,In Progress
+Auto,10218,100418,In Progress
+Auto,10221,123155,Completed
+Health,10227,93390,Completed
+Auto,10228,6641,In Progress
+Health,10234,94694,Completed
+Health,10236,5673,Completed
+Health,10237,183204,Completed
+Auto,10238,147961,Completed
+Auto,10240,27815,Completed
+Auto,10242,62269,Completed
+Auto,10244,79568,In Progress
+Health,10251,54785,In Progress
+Health,10252,126527,Completed
+Auto,10253,123041,In Progress
+Auto,10254,41363,Completed
+Auto,10262,190594,Pending
+Health,10263,27005,Completed
+Auto,10265,31803,Pending
+Health,10267,46957,Completed
+Auto,10269,19642,Completed
+Health,10278,50495,In Progress
+Health,10279,149502,In Progress
+Auto,10281,84075,In Progress
+Auto,10282,188410,Completed
+Health,10283,167278,In Progress
+Health,10287,143263,Completed
+Auto,10292,143770,Completed
+Auto,10293,43724,In Progress
+Health,10295,65485,In Progress
+Health,10298,31654,In Progress
+Auto,10299,192951,In Progress
+Auto,10301,128395,In Progress
+Auto,10308,83671,In Progress
+Health,10313,178640,In Progress
+Auto,10315,152470,In Progress
+Auto,10321,125473,In Progress
+Auto,10336,6326,In Progress
+Auto,10338,62391,In Progress
+Health,10340,187179,Completed
+Auto,10348,58168,In Progress
+Health,10349,140486,Completed
+Health,10356,72955,Completed
+Auto,10358,191606,In Progress
+Health,10364,141162,Completed
+Health,10367,52429,In Progress
+Auto,10370,7021,In Progress
+Health,10371,65937,In Progress
+Health,10373,55034,Completed
+Health,10374,199706,In Progress
+Health,10375,137244,Completed
+Health,10383,98572,In Progress
+Health,10385,25033,Denied
+Health,10386,54887,Completed
+Health,10388,83361,In Progress
+Health,10390,90667,Denied
+Health,10392,106066,In Progress
+Health,10396,38127,In Progress
+Auto,10400,149683,Completed
+Auto,10407,33024,In Progress
+Health,10410,9818,Completed
+Auto,10413,175914,In Progress
+Health,10419,154957,In Progress
+Health,10425,48683,In Progress
+Health,10430,119400,In Progress
+Health,10437,99161,In Progress
+Auto,10438,64306,Completed
+Auto,10442,55342,Completed
+Health,10445,37497,Completed
+Auto,10447,28304,Completed
+Health,10448,180736,Completed
+Health,10451,134835,Denied
+Health,10453,180534,Completed
+Health,10454,24818,In Progress
+Health,10457,180967,In Progress
+Health,10466,145849,In Progress
+Health,10468,13119,Completed
+Health,10472,48670,In Progress
+Auto,10473,108235,Completed
+Auto,10476,164120,In Progress
+Auto,10481,103112,In Progress
+Auto,10483,6364,Completed
+Auto,10484,174514,Completed
+Auto,10485,6491,Completed
+Auto,10486,184742,In Progress
+Health,10489,35920,In Progress
+Auto,10493,119751,Completed
+Auto,10497,94602,Completed
+Auto,10500,15108,In Progress
+Auto,10502,162030,Completed
+Health,10503,92403,In Progress
+Auto,10505,19762,In Progress
+Health,10507,191837,In Progress
+Auto,10509,74504,In Progress
+Health,10512,113452,In Progress
+Auto,10517,87015,In Progress
+Auto,10519,140562,In Progress
+Auto,10529,85926,In Progress
+Auto,10532,124184,Completed
+Health,10540,13720,Denied
+Health,10546,17122,In Progress
+Health,10548,185277,In Progress
+Auto,10549,134502,In Progress
+Auto,10553,93270,In Progress
+Health,10554,186040,Completed
+Auto,10562,8698,In Progress
+Auto,10564,58705,Completed
+Auto,10565,8798,In Progress
+Health,10576,36713,Completed
+Health,10582,59007,Denied
+Health,10583,12581,In Progress
+Health,10585,155378,In Progress
+Health,10589,12822,Completed
+Health,10590,136983,Completed
+Auto,10593,190979,Completed
+Auto,10595,54239,In Progress
+Health,10596,88240,In Progress
+Health,10597,7735,In Progress
+Auto,10599,185768,Completed
+Health,10602,177571,Completed
+Auto,10603,89457,Completed
+Auto,10605,139390,In Progress
+Auto,10610,5867,In Progress
+Auto,10617,100092,Completed
+Health,10618,180148,Completed
+Auto,10629,52562,In Progress
+Health,10630,197868,In Progress
+Health,10631,78218,Completed
+Health,10632,127265,In Progress
+Health,10634,112388,Completed
+Health,10636,48596,In Progress
+Auto,10640,178073,Completed
+Health,10641,73451,Completed
+Auto,10645,35894,Completed
+Auto,10647,47414,Completed
+Health,10654,185599,In Progress
+Health,10655,17294,Completed
+Auto,10658,28273,In Progress
+Auto,10659,35810,In Progress
+Health,10665,78127,In Progress
+Auto,10673,177865,In Progress
+Health,10674,31868,In Progress
+Health,10675,127864,Denied
+Health,10681,103222,In Progress
+Auto,10690,115310,In Progress
+Auto,10692,161451,In Progress
+Unknown,10694,145404,In Progress
+Auto,10698,73188,In Progress
+Unknown,10700,56767,In Progress
+Auto,10701,21611,In Progress
+Auto,10704,27429,In Progress
+Health,10708,178773,In Progress
+Unknown,10709,47723,In Progress
+Auto,10714,154229,Completed
+Auto,10716,59751,Completed
+Health,10720,176476,Completed
+Health,10724,155638,Completed
+Health,10727,158111,In Progress
+Auto,10728,83105,In Progress
+Auto,10734,14258,Completed
+Auto,10737,102254,Completed
+Health,10738,96774,In Progress
+Auto,10741,135088,Completed
+Health,10744,71976,In Progress
+Auto,10748,113906,In Progress
+Auto,10755,194725,In Progress
+Health,10757,134618,Completed
+Health,10758,77625,Completed
+Auto,10761,56324,Pending
+Auto,10769,88099,Completed
+Auto,10771,150728,Completed
+Health,10773,175843,In Progress
+Auto,10774,73538,Completed
+Health,10778,20729,In Progress
+Auto,10779,75162,Completed
+Health,10789,127837,Completed
+Health,10790,32019,In Progress
+Health,10791,134767,Pending
+Health,10806,8172,In Progress
+Auto,10809,74969,Completed
+Health,10815,117110,Pending
+Auto,10819,99568,Completed
+Health,10820,191745,Completed
+Auto,10823,107428,Completed
+Health,10828,74635,Completed
+Health,10836,57147,In Progress
+Health,10837,73613,Completed
+Health,10839,131067,In Progress
+Health,10842,40291,In Progress
+Health,10846,76994,Completed
+Auto,10850,152656,Completed
+Health,10852,30642,In Progress
+Health,10853,52163,Completed
+Auto,10855,57279,Completed
+Auto,10858,43253,Completed
+Health,10859,88482,Pending
+Auto,10861,153633,In Progress
+Health,10867,9517,Completed
+Health,10868,130358,Pending
+Auto,10870,195707,In Progress
+Health,10871,185600,Completed
+Auto,10876,55214,In Progress
+Health,10878,103100,Completed
+Health,10880,173005,In Progress
+Health,10882,174854,In Progress
+Health,10886,123656,Completed
+Unknown,10887,185127,In Progress
+Auto,10892,28788,Completed
+Health,10895,52155,In Progress
+Health,10898,179705,In Progress
+Health,10905,154372,In Progress
+Health,10906,142848,In Progress
+Auto,10907,117196,Completed
+Health,10911,2569,In Progress
+Auto,10915,133835,In Progress
+Health,10916,108816,In Progress
+Health,10917,155105,Completed
+Health,10920,141233,Completed
+Auto,10921,153675,Completed
+Health,10922,109348,Completed
+Auto,10924,190784,Completed
+Auto,10926,53557,In Progress
+Auto,10927,172982,In Progress
+Auto,10928,83086,In Progress
+Auto,10936,106164,Completed
+Auto,10938,82075,Completed
+Auto,10940,138227,Completed
+Auto,10941,130847,Completed
+Auto,10943,131059,Completed
+Health,10944,141372,Pending
+Unknown,10947,84430,In Progress
+Health,10958,46459,In Progress
+Auto,10962,158158,In Progress
+Health,10963,145200,In Progress
+Auto,10965,105214,In Progress
+Auto,10969,20363,In Progress
+Auto,10970,50455,Completed
+Unknown,10971,7494,In Progress
+Auto,10973,161483,In Progress
+Health,10979,42586,Completed
+Auto,10981,181085,Completed
+Health,10984,121390,Completed
+Auto,10991,183487,Completed
+Health,10993,41751,In Progress
+Health,10994,11218,In Progress
+Health,10995,92905,In Progress
+Auto,10996,106374,In Progress
+Health,10997,29985,In Progress
+Health,10998,184202,In Progress
+Auto,11000,151685,Completed

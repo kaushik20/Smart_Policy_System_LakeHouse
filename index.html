@@ -4,17 +4,374 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Policy System – Insurance Analytics</title>
+<meta name="description" content="Interactive insurance analytics dashboard built on the Gold layer of the Smart Policy System Azure Lakehouse.">
 <style>
-  html, body { margin: 0; background: #1f2329; }
-  main { max-width: 1400px; margin: 0 auto; padding: 16px; }
-  img { display: block; width: 100%; height: auto; border-radius: 6px; }
+  :root{
+    --bg:#15181d; --panel:#1d2128; --panel-2:#232831; --line:#2e343e; --grid:#2a3039;
+    --text:#e8eaed; --muted:#9aa3ae; --faint:#6b7480; --accent:#38a3e0;
+    --auto:#38a3e0; --health:#f5a623; --unknown:#9ca3af;
+    --completed:#34d399; --inprogress:#a78bfa; --pending:#f472b6; --denied:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1320px;margin:0 auto;padding:24px 16px 40px}
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}
+  h1{font-size:24px;margin:0 0 4px;font-weight:650;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13px}
+  .filters{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:16px;position:sticky;top:0;z-index:5}
+  .fgroup{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .flabel{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
+  .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;user-select:none}
+  .chip .dot{width:9px;height:9px;border-radius:50%}
+  .chip[aria-pressed="false"]{opacity:.45}
+  .chip[aria-pressed="false"] .dot{background:transparent!important;border:1px solid var(--faint)}
+  .chip:focus-visible,.seg button:focus-visible,th button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .reset{margin-left:auto;background:none;border:none;color:var(--accent);cursor:pointer;font:inherit;font-size:13px}
+  .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .kpi .k{color:var(--muted);font-size:12px}
+  .kpi .v{font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px;letter-spacing:-.01em}
+  .kpi .n{color:var(--faint);font-size:11.5px;margin-top:2px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px 10px;min-width:0}
+  .card.full{grid-column:1/-1}
+  .chead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+  .ctitle{font-weight:600;font-size:15px}
+  .cnote{color:var(--faint);font-size:12px;margin-top:2px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{background:var(--panel-2);color:var(--muted);border:0;border-right:1px solid var(--line);padding:5px 11px;font:inherit;font-size:12.5px;cursor:pointer}
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:#2f3a48;color:var(--text)}
+  .legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin:2px 0 4px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+  .chart{width:100%;position:relative}
+  svg text{fill:var(--muted);font-size:11.5px}
+  .axis path,.axis line{stroke:var(--line)}
+  .gridline line{stroke:var(--grid)} .gridline path{display:none}
+  .tip{position:fixed;pointer-events:none;background:#0f1216;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transition:opacity .08s;z-index:20;max-width:280px}
+  .tip b{font-weight:600}
+  .tip .row{display:flex;justify-content:space-between;gap:16px;font-variant-numeric:tabular-nums}
+  .tip .sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+  .tablebar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+  input[type=search]{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;width:220px;max-width:100%}
+  .tscroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--muted);font-weight:500;font-size:12px}
+  th button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:0}
+  td.num,th.num{text-align:right}
+  .badge{display:inline-flex;align-items:center;gap:6px}
+  .badge i{width:8px;height:8px;border-radius:50%}
+  .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;color:var(--muted);font-size:12.5px;padding:8px 0 4px}
+  .pager button{background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:3px 10px;cursor:pointer;font:inherit}
+  .pager button:disabled{opacity:.35;cursor:default}
+  footer{color:var(--faint);font-size:12px;margin-top:22px;line-height:1.6}
+  .err{background:#3a1d1d;border:1px solid #6b2b2b;color:#ffd5d5;padding:12px 14px;border-radius:8px;display:none;margin-bottom:16px}
+  @media (max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (max-width:760px){.filters{position:static}.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:22px}.reset{margin-left:0}h1{font-size:20px}}
 </style>
 </head>
 <body>
-<main>
-  <a href="docs/dashboard_overview.png">
-    <img src="docs/dashboard_overview.png" alt="Policy System – Insurance Analytics dashboard: KPI tiles (349 policies, $37.47M total premium, $31.76M claims paid, 84.8% overall loss ratio), premium and policies sold by month, loss ratio by policy type, claim count by policy type and status, and claim amount distribution">
-  </a>
-</main>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Policy System – Insurance Analytics</h1>
+      <div class="sub" id="refreshed">Gold layer snapshot</div>
+    </div>
+    <a class="sub" href="https://github.com/kaushik20/Smart_Policy_System_LakeHouse">How this data is built: the pipeline on GitHub →</a>
+  </header>
+
+  <div class="err" id="err"></div>
+
+  <div class="filters" role="group" aria-label="Filters">
+    <div class="fgroup" id="f-type"><span class="flabel">Policy type</span></div>
+    <div class="fgroup" id="f-status"><span class="flabel">Claim status</span></div>
+    <button class="reset" id="reset" type="button">Reset filters</button>
+  </div>
+
+  <section class="kpis" id="kpis" aria-label="Key figures"></section>
+
+  <div class="grid">
+    <div class="card full">
+      <div class="chead">
+        <div><div class="ctitle" id="trend-title">Premium by month</div><div class="cnote">Policies by start month · hover for values, click a legend item to hide a line</div></div>
+        <div class="seg" id="trend-metric">
+          <button type="button" data-v="total_premium" aria-pressed="true">Premium</button>
+          <button type="button" data-v="policies_sold" aria-pressed="false">Policies sold</button>
+          <button type="button" data-v="avg_premium" aria-pressed="false">Avg premium</button>
+        </div>
+      </div>
+      <div class="legend" id="trend-legend"></div>
+      <div class="chart" id="trend"></div>
+    </div>
+
+    <div class="card">
+      <div class="chead"><div><div class="ctitle">Loss ratio by policy type</div><div class="cnote">Claim amount ÷ premium · line = portfolio average · click a bar to filter</div></div></div>
+      <div class="chart" id="loss"></div>
+    </div>
+
+    <div class="card">
+      <div class="chead">
+        <div><div class="ctitle">Claims by policy type and status</div><div class="cnote">Click a segment to filter by that status</div></div>
+        <div class="seg" id="status-metric">
+          <button type="button" data-v="count" aria-pressed="true">Count</button>
+          <button type="button" data-v="amount" aria-pressed="false">Amount</button>
+        </div>
+      </div>
+      <div class="legend" id="status-legend"></div>
+      <div class="chart" id="status"></div>
+    </div>
+
+    <div class="card full">
+      <div class="chead"><div><div class="ctitle">Claim amount distribution</div><div class="cnote">Box = middle 50% of claims, line = median, whiskers = min / max · each dot is one claim</div></div></div>
+      <div class="chart" id="box"></div>
+    </div>
+
+    <div class="card full">
+      <div class="tablebar">
+        <div><div class="ctitle">Claims</div><div class="cnote" id="table-note"></div></div>
+        <input type="search" id="search" placeholder="Search claim ID…" aria-label="Search claim ID">
+      </div>
+      <div class="tscroll"><table id="table"><thead></thead><tbody></tbody></table></div>
+      <div class="pager"><span id="pageinfo"></span><button type="button" id="prev">‹ Prev</button><button type="button" id="next">Next ›</button></div>
+    </div>
+  </div>
+
+  <footer>
+    Data: Gold tables <code>sales_by_policy_type_and_month</code>, <code>claims_by_policy_type_and_status</code> and <code>claim_analysis_by_policy_type</code>, plus claim-level rows from Silver, exported from Azure Databricks.
+    Policy type filters everything; claim status filters the claim figures. Policy count, premium and claim frequency are status-independent.
+  </footer>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(() => {
+const TYPES = ["Auto","Health","Unknown"];
+const STATUSES = ["Completed","In Progress","Pending","Denied"];
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const TYPE_COLOR = {Auto:css("--auto"), Health:css("--health"), Unknown:css("--unknown")};
+const STATUS_COLOR = {"Completed":css("--completed"),"In Progress":css("--inprogress"),"Pending":css("--pending"),"Denied":css("--denied")};
+
+const state = { types:new Set(TYPES), statuses:new Set(STATUSES), hidden:new Set(),
+  trendMetric:"total_premium", statusMetric:"count", sort:{key:"claim_id",dir:1}, page:0, q:"" };
+
+const money = v => { const a=Math.abs(v); return a>=1e6?"$"+(v/1e6).toFixed(2)+"M":a>=1e3?"$"+(v/1e3).toFixed(1)+"K":"$"+d3.format(",.0f")(v); };
+const moneyFull = d3.format("$,.0f"), int = d3.format(","), pct = d3.format(".1%");
+const tip = document.getElementById("tip");
+function showTip(html, ev){ tip.innerHTML = html; tip.style.opacity = 1; moveTip(ev); }
+function moveTip(ev){ const w=tip.offsetWidth,h=tip.offsetHeight; let x=ev.clientX+14,y=ev.clientY+14;
+  if(x+w>innerWidth-8) x=ev.clientX-w-14; if(y+h>innerHeight-8) y=ev.clientY-h-14; tip.style.left=x+"px"; tip.style.top=y+"px"; }
+function hideTip(){ tip.style.opacity = 0; }
+const sw = c => `<span class="sw" style="background:${c}"></span>`;
+
+let D = {};
+Promise.all(["sales","claims_status","claim_analysis","claims_detail"].map(f => d3.csv(`data/${f}.csv`, d3.autoType)))
+.then(([sales, status, analysis, detail]) => {
+  sales.forEach(d => d.month = d.sales_month instanceof Date ? d.sales_month : new Date(d.sales_month + "T00:00:00Z"));
+  detail.forEach(d => d.claim_id = +d.claim_id);
+  D = {sales, status, analysis, detail};
+  const r = analysis[0] && analysis[0].refreshed_at;
+  if (r) document.getElementById("refreshed").textContent = "Gold layer snapshot · refreshed " + d3.utcFormat("%-d %b %Y")(new Date(r));
+  buildFilters(); bindControls(); renderAll();
+  new ResizeObserver(debounce(renderCharts, 120)).observe(document.querySelector(".grid"));
+}).catch(e => { const el=document.getElementById("err"); el.style.display="block";
+  el.textContent = "Could not load the data files in /data. If you opened this file directly from your computer, serve it over http (GitHub Pages does this). " + e; });
+
+function debounce(f,ms){ let t; return () => { clearTimeout(t); t = setTimeout(f, ms); }; }
+
+function chip(label, color, pressed, onClick){
+  const b = document.createElement("button"); b.type="button"; b.className="chip"; b.setAttribute("aria-pressed", pressed);
+  b.innerHTML = `<span class="dot" style="background:${color}"></span>${label}`; b.onclick = onClick; return b;
+}
+function buildFilters(){
+  const ft = document.getElementById("f-type"), fs = document.getElementById("f-status");
+  ft.querySelectorAll(".chip").forEach(c=>c.remove()); fs.querySelectorAll(".chip").forEach(c=>c.remove());
+  TYPES.forEach(t => ft.appendChild(chip(t, TYPE_COLOR[t], state.types.has(t), () => toggle(state.types, t))));
+  STATUSES.forEach(s => fs.appendChild(chip(s, STATUS_COLOR[s], state.statuses.has(s), () => toggle(state.statuses, s))));
+}
+function toggle(set, v){ if (set.has(v)) { if (set.size > 1) set.delete(v); } else set.add(v); state.page = 0; buildFilters(); renderAll(); }
+function solo(set, v, all){ if (set.size === 1 && set.has(v)) all.forEach(x => set.add(x)); else { set.clear(); set.add(v); } state.page=0; buildFilters(); renderAll(); }
+
+function bindControls(){
+  document.getElementById("reset").onclick = () => { TYPES.forEach(t=>state.types.add(t)); STATUSES.forEach(s=>state.statuses.add(s)); state.hidden.clear(); state.q=""; document.getElementById("search").value=""; state.page=0; buildFilters(); renderAll(); };
+  seg("trend-metric", v => { state.trendMetric = v; renderTrend(); });
+  seg("status-metric", v => { state.statusMetric = v; renderStatus(); });
+  document.getElementById("search").oninput = e => { state.q = e.target.value.trim(); state.page = 0; renderTable(); };
+  document.getElementById("prev").onclick = () => { state.page--; renderTable(); };
+  document.getElementById("next").onclick = () => { state.page++; renderTable(); };
+}
+function seg(id, cb){ const el=document.getElementById(id); el.querySelectorAll("button").forEach(b => b.onclick = () => {
+  el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x===b)); cb(b.dataset.v); }); }
+
+const claims = () => D.detail.filter(d => state.types.has(d.policy_type) && state.statuses.has(d.claim_status));
+const activeTypes = () => TYPES.filter(t => state.types.has(t));
+
+function renderAll(){ renderKpis(); renderCharts(); renderTable(); }
+function renderCharts(){ renderTrend(); renderLoss(); renderStatus(); renderBox(); }
+
+function renderKpis(){
+  const a = D.analysis.filter(d => state.types.has(d.policy_type));
+  const policies = d3.sum(a, d=>d.policies), premium = d3.sum(a, d=>d.total_premium);
+  const withClaims = d3.sum(a, d=>d.policies_with_claims);
+  const c = claims(), claimAmt = d3.sum(c, d=>d.claim_amount);
+  const allStatuses = state.statuses.size === STATUSES.length;
+  const statusNote = allStatuses ? "all claim statuses" : [...state.statuses].join(", ");
+  const items = [
+    ["Total policies", int(policies), activeTypes().join(" · ")],
+    ["Total premium", money(premium), moneyFull(premium)],
+    ["Total claim amount", money(claimAmt), statusNote],
+    ["Loss ratio", premium ? pct(claimAmt/premium) : "–", "claim amount ÷ premium"],
+    ["Claim frequency", policies ? pct(withClaims/policies) : "–", "policies with ≥ 1 claim"],
+    ["Claims", int(c.length), "avg " + (c.length ? money(claimAmt/c.length) : "–")],
+  ];
+  document.getElementById("kpis").innerHTML = items.map(([k,v,n]) => `<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join("");
+}
+
+function frame(id, height, m){
+  const el = document.getElementById(id); el.innerHTML = "";
+  const W = Math.max(280, el.clientWidth), H = height;
+  const svg = d3.select(el).append("svg").attr("width", W).attr("height", H).attr("role","img");
+  return {svg, g: svg.append("g").attr("transform",`translate(${m.l},${m.t})`), w: W-m.l-m.r, h: H-m.t-m.b, W, el};
+}
+
+function renderTrend(){
+  const metric = state.trendMetric;
+  const labels = {total_premium:"Premium by month", policies_sold:"Policies sold by month", avg_premium:"Average premium by month"};
+  document.getElementById("trend-title").textContent = labels[metric];
+  const months = Array.from(new Set(D.sales.map(d=>+d.month))).sort((a,b)=>a-b).map(t=>new Date(t));
+  const types = activeTypes();
+  const series = types.map(t => ({type:t, values: months.map(m => {
+    const r = D.sales.find(d => d.policy_type===t && +d.month===+m);
+    return {m, v: r ? r[metric] : (metric==="avg_premium" ? null : 0), r};
+  })}));
+  const lg = document.getElementById("trend-legend");
+  lg.innerHTML = types.map(t => `<span style="cursor:pointer;opacity:${state.hidden.has(t)?.4:1}" data-t="${t}"><i style="background:${TYPE_COLOR[t]}"></i>${t}</span>`).join("");
+  lg.querySelectorAll("span").forEach(s => s.onclick = () => { const t=s.dataset.t; state.hidden.has(t)?state.hidden.delete(t):state.hidden.add(t); renderTrend(); });
+  const vis = series.filter(s => !state.hidden.has(s.type));
+  const f = frame("trend", 280, {t:10,r:26,b:28,l:58});
+  const x = d3.scaleUtc().domain(d3.extent(months)).range([0,f.w]);
+  const maxV = d3.max(vis, s => d3.max(s.values, d=>d.v)) || 1;
+  const y = d3.scaleLinear().domain([0, maxV]).nice().range([f.h,0]);
+  const yfmt = metric==="policies_sold" ? d3.format("d") : money;
+  f.g.append("g").attr("class","gridline").call(d3.axisLeft(y).ticks(5).tickSize(-f.w).tickFormat(""));
+  f.g.append("g").attr("class","axis").call(d3.axisLeft(y).ticks(5).tickFormat(yfmt));
+  f.g.append("g").attr("class","axis").attr("transform",`translate(0,${f.h})`).call(d3.axisBottom(x).ticks(f.w<520?d3.utcMonth.every(3):d3.utcMonth.every(1)).tickFormat(d3.utcFormat("%b %y")));
+  const line = d3.line().defined(d=>d.v!=null).x(d=>x(d.m)).y(d=>y(d.v)).curve(d3.curveMonotoneX);
+  vis.forEach(s => {
+    f.g.append("path").datum(s.values).attr("fill","none").attr("stroke",TYPE_COLOR[s.type]).attr("stroke-width",2.2).attr("d",line);
+    f.g.selectAll(null).data(s.values.filter(d=>d.v!=null)).join("circle").attr("cx",d=>x(d.m)).attr("cy",d=>y(d.v)).attr("r",2.6).attr("fill",TYPE_COLOR[s.type]);
+  });
+  const guide = f.g.append("line").attr("y1",0).attr("y2",f.h).attr("stroke","#556").attr("stroke-dasharray","3,3").style("opacity",0);
+  f.g.append("rect").attr("width",f.w).attr("height",f.h).attr("fill","transparent")
+    .on("mousemove", ev => {
+      const [mx] = d3.pointer(ev); const t = x.invert(mx);
+      const m = months.reduce((a,b) => Math.abs(b-t) < Math.abs(a-t) ? b : a);
+      guide.attr("x1",x(m)).attr("x2",x(m)).style("opacity",1);
+      const rows = vis.map(s => { const d = s.values.find(v=>+v.m===+m); const r = d.r;
+        const val = d.v==null ? "–" : metric==="policies_sold" ? int(d.v) : moneyFull(d.v);
+        const extra = r && metric!=="policies_sold" ? ` <span style="color:var(--faint)">(${r.policies_sold} pol.)</span>` : "";
+        return `<div class="row"><span>${sw(TYPE_COLOR[s.type])}${s.type}</span><span>${val}${extra}</span></div>`; }).join("");
+      showTip(`<b>${d3.utcFormat("%B %Y")(m)}</b>${rows}`, ev);
+    }).on("mouseleave", () => { guide.style("opacity",0); hideTip(); });
+}
+
+function renderLoss(){
+  const c = claims();
+  const rows = activeTypes().map(t => {
+    const a = D.analysis.find(d=>d.policy_type===t) || {total_premium:0, policies:0, policies_with_claims:0};
+    const amt = d3.sum(c.filter(d=>d.policy_type===t), d=>d.claim_amount);
+    return {t, lr: a.total_premium ? amt/a.total_premium : 0, amt, prem:a.total_premium, freq: a.policies ? a.policies_with_claims/a.policies : 0, n:c.filter(d=>d.policy_type===t).length};
+  }).sort((a,b)=>b.lr-a.lr);
+  const avg = d3.sum(rows,d=>d.amt) / (d3.sum(rows,d=>d.prem) || 1);
+  const f = frame("loss", 290, {t:22,r:12,b:28,l:46});
+  const x = d3.scaleBand().domain(rows.map(d=>d.t)).range([0,f.w]).padding(0.28);
+  const y = d3.scaleLinear().domain([0, Math.max(1, d3.max(rows,d=>d.lr)*1.12)]).nice().range([f.h,0]);
+  f.g.append("g").attr("class","gridline").call(d3.axisLeft(y).ticks(5).tickSize(-f.w).tickFormat(""));
+  f.g.append("g").attr("class","axis").call(d3.axisLeft(y).ticks(5).tickFormat(d3.format(".0%")));
+  f.g.append("g").attr("class","axis").attr("transform",`translate(0,${f.h})`).call(d3.axisBottom(x));
+  f.g.selectAll(null).data(rows).join("rect").attr("x",d=>x(d.t)).attr("y",d=>y(d.lr)).attr("width",x.bandwidth()).attr("height",d=>f.h-y(d.lr))
+    .attr("rx",3).attr("fill",d=>TYPE_COLOR[d.t]).style("cursor","pointer")
+    .on("mousemove",(ev,d)=>showTip(`<b>${d.t}</b><div class="row"><span>Loss ratio</span><span>${pct(d.lr)}</span></div><div class="row"><span>Claim amount</span><span>${moneyFull(d.amt)}</span></div><div class="row"><span>Premium</span><span>${moneyFull(d.prem)}</span></div><div class="row"><span>Claims</span><span>${int(d.n)}</span></div><div class="row"><span>Claim frequency</span><span>${pct(d.freq)}</span></div>`,ev))
+    .on("mouseleave",hideTip).on("click",(ev,d)=>{hideTip(); solo(state.types,d.t,TYPES);});
+  f.g.selectAll(null).data(rows).join("text").attr("x",d=>x(d.t)+x.bandwidth()/2).attr("y",d=>y(d.lr)-6).attr("text-anchor","middle")
+    .style("fill","var(--text)").style("font-size","12.5px").style("font-weight",600).text(d=>pct(d.lr));
+  f.g.append("line").attr("x1",0).attr("x2",f.w).attr("y1",y(avg)).attr("y2",y(avg)).attr("stroke","#e8eaed").attr("stroke-dasharray","4,4").attr("opacity",.7);
+  f.g.append("text").attr("x",f.w).attr("y",y(avg)-5).attr("text-anchor","end").text("avg " + pct(avg));
+  if (y.domain()[1] >= 1) { f.g.append("line").attr("x1",0).attr("x2",f.w).attr("y1",y(1)).attr("y2",y(1)).attr("stroke",css("--denied")).attr("opacity",.5); f.g.append("text").attr("x",4).attr("y",y(1)-5).style("fill",css("--denied")).style("opacity",.85).text("100% = claims equal premium"); }
+}
+
+function renderStatus(){
+  const metric = state.statusMetric;
+  const statuses = STATUSES.filter(s=>state.statuses.has(s));
+  document.getElementById("status-legend").innerHTML = statuses.map(s=>`<span><i style="background:${STATUS_COLOR[s]}"></i>${s}</span>`).join("");
+  const types = activeTypes();
+  const val = (t,s) => { const r = D.status.find(d=>d.policy_type===t && d.claim_status===s); return r ? (metric==="count"? r.claim_count : r.total_claim_amount) : 0; };
+  const rows = types.map(t => { const o = {t}; statuses.forEach(s => o[s] = val(t,s)); o.total = d3.sum(statuses, s=>o[s]); return o; });
+  const stack = d3.stack().keys(statuses)(rows);
+  const f = frame("status", 262, {t:10,r:12,b:28,l:metric==="count"?40:56});
+  const x = d3.scaleBand().domain(types).range([0,f.w]).padding(0.28);
+  const y = d3.scaleLinear().domain([0, d3.max(rows,d=>d.total)||1]).nice().range([f.h,0]);
+  const yfmt = metric==="count" ? d3.format("d") : money;
+  f.g.append("g").attr("class","gridline").call(d3.axisLeft(y).ticks(5).tickSize(-f.w).tickFormat(""));
+  f.g.append("g").attr("class","axis").call(d3.axisLeft(y).ticks(5).tickFormat(yfmt));
+  f.g.append("g").attr("class","axis").attr("transform",`translate(0,${f.h})`).call(d3.axisBottom(x));
+  f.g.selectAll(null).data(stack).join("g").attr("fill",d=>STATUS_COLOR[d.key])
+    .selectAll("rect").data(d=>d.map(v=>Object.assign(v,{key:d.key}))).join("rect")
+    .attr("x",d=>x(d.data.t)).attr("y",d=>y(d[1])).attr("height",d=>Math.max(0,y(d[0])-y(d[1]))).attr("width",x.bandwidth()).style("cursor","pointer")
+    .on("mousemove",(ev,d)=>{ const v=d[1]-d[0]; const r=D.status.find(z=>z.policy_type===d.data.t&&z.claim_status===d.key)||{};
+      showTip(`<b>${d.data.t} · ${d.key}</b><div class="row"><span>Claims</span><span>${int(r.claim_count||0)}</span></div><div class="row"><span>Amount</span><span>${moneyFull(r.total_claim_amount||0)}</span></div><div class="row"><span>Avg claim</span><span>${r.avg_claim_amount?moneyFull(r.avg_claim_amount):"–"}</span></div><div class="row"><span>Share of ${d.data.t}</span><span>${d.data.total?pct(v/d.data.total):"–"}</span></div>`,ev); })
+    .on("mouseleave",hideTip).on("click",(ev,d)=>{hideTip(); solo(state.statuses,d.key,STATUSES);});
+  f.g.selectAll(null).data(rows).join("text").attr("x",d=>x(d.t)+x.bandwidth()/2).attr("y",d=>y(d.total)-5).attr("text-anchor","middle")
+    .style("fill","var(--text)").style("font-weight",600).text(d=>metric==="count"?int(d.total):money(d.total));
+}
+
+function renderBox(){
+  const c = claims(); const types = activeTypes();
+  const groups = types.map(t => { const v = c.filter(d=>d.policy_type===t).map(d=>d.claim_amount).sort(d3.ascending);
+    return {t, pts:c.filter(d=>d.policy_type===t), n:v.length, min:d3.min(v), q1:d3.quantile(v,.25), med:d3.quantile(v,.5), q3:d3.quantile(v,.75), max:d3.max(v)}; });
+  const f = frame("box", 300, {t:10,r:16,b:28,l:58});
+  const x = d3.scaleBand().domain(types).range([0,f.w]).padding(0.3);
+  const y = d3.scaleLinear().domain([0, d3.max(c,d=>d.claim_amount)||1]).nice().range([f.h,0]);
+  f.g.append("g").attr("class","gridline").call(d3.axisLeft(y).ticks(5).tickSize(-f.w).tickFormat(""));
+  f.g.append("g").attr("class","axis").call(d3.axisLeft(y).ticks(5).tickFormat(money));
+  f.g.append("g").attr("class","axis").attr("transform",`translate(0,${f.h})`).call(d3.axisBottom(x).tickFormat(t=>{const g=groups.find(z=>z.t===t);return `${t} (${g.n})`;}));
+  const bw = Math.min(x.bandwidth()*0.5, 120), spread = Math.max(6, x.bandwidth()/2 - bw/2 - 12);
+  groups.filter(g=>g.n).forEach(g => {
+    const cx = x(g.t)+x.bandwidth()/2, col = TYPE_COLOR[g.t], gg = f.g.append("g");
+    gg.append("line").attr("x1",cx).attr("x2",cx).attr("y1",y(g.min)).attr("y2",y(g.max)).attr("stroke",col).attr("opacity",.8);
+    [g.min,g.max].forEach(v=>gg.append("line").attr("x1",cx-bw*.18).attr("x2",cx+bw*.18).attr("y1",y(v)).attr("y2",y(v)).attr("stroke",col));
+    gg.append("rect").attr("x",cx-bw/2).attr("width",bw).attr("y",y(g.q3)).attr("height",Math.max(1,y(g.q1)-y(g.q3))).attr("fill",col).attr("fill-opacity",.18).attr("stroke",col).attr("rx",3);
+    gg.append("line").attr("x1",cx-bw/2).attr("x2",cx+bw/2).attr("y1",y(g.med)).attr("y2",y(g.med)).attr("stroke","#fff").attr("stroke-width",2);
+    gg.append("rect").attr("x",cx-bw/2).attr("width",bw).attr("y",y(g.max)).attr("height",Math.max(1,y(g.min)-y(g.max))).attr("fill","transparent")
+      .on("mousemove",ev=>showTip(`<b>${g.t}</b> · ${int(g.n)} claims<div class="row"><span>Max</span><span>${moneyFull(g.max)}</span></div><div class="row"><span>75th pct</span><span>${moneyFull(g.q3)}</span></div><div class="row"><span>Median</span><span>${moneyFull(g.med)}</span></div><div class="row"><span>25th pct</span><span>${moneyFull(g.q1)}</span></div><div class="row"><span>Min</span><span>${moneyFull(g.min)}</span></div>`,ev))
+      .on("mouseleave",hideTip);
+    const jitter = d3.randomUniform.source(d3.randomLcg(42))(-1,1);
+    gg.selectAll(null).data(g.pts).join("circle").attr("cx",()=>cx + bw/2 + 8 + Math.abs(jitter())*Math.min(40, spread)).attr("cy",d=>y(d.claim_amount))
+      .attr("r",2.4).attr("fill",d=>STATUS_COLOR[d.claim_status]).attr("opacity",.85)
+      .on("mousemove",(ev,d)=>showTip(`<b>Claim ${d.claim_id}</b><div class="row"><span>Amount</span><span>${moneyFull(d.claim_amount)}</span></div><div class="row"><span>Status</span><span>${sw(STATUS_COLOR[d.claim_status])}${d.claim_status}</span></div>`,ev))
+      .on("mouseleave",hideTip);
+  });
+}
+
+function renderTable(){
+  const cols = [["claim_id","Claim ID",true],["policy_type","Policy type",false],["claim_status","Status",false],["claim_amount","Amount",true]];
+  const th = document.querySelector("#table thead");
+  th.innerHTML = "<tr>" + cols.map(([k,l,num]) => `<th class="${num?"num":""}" aria-sort="${state.sort.key===k?(state.sort.dir>0?"ascending":"descending"):"none"}"><button type="button" data-k="${k}">${l}${state.sort.key===k?(state.sort.dir>0?" ▲":" ▼"):""}</button></th>`).join("") + "</tr>";
+  th.querySelectorAll("button").forEach(b => b.onclick = () => { const k=b.dataset.k; state.sort = {key:k, dir: state.sort.key===k ? -state.sort.dir : (k==="claim_amount"?-1:1)}; renderTable(); });
+  let rows = claims().filter(d => !state.q || String(d.claim_id).includes(state.q));
+  const {key,dir} = state.sort; rows.sort((a,b) => d3.ascending(a[key],b[key]) * dir);
+  const per = 12, pages = Math.max(1, Math.ceil(rows.length/per)); state.page = Math.min(Math.max(0,state.page), pages-1);
+  const slice = rows.slice(state.page*per, state.page*per+per);
+  document.querySelector("#table tbody").innerHTML = slice.map(d => `<tr><td class="num">${d.claim_id}</td><td><span class="badge"><i style="background:${TYPE_COLOR[d.policy_type]}"></i>${d.policy_type}</span></td><td><span class="badge"><i style="background:${STATUS_COLOR[d.claim_status]}"></i>${d.claim_status}</span></td><td class="num">${moneyFull(d.claim_amount)}</td></tr>`).join("")
+    || `<tr><td colspan="4" style="color:var(--muted)">No claims match.</td></tr>`;
+  document.getElementById("table-note").textContent = `${int(rows.length)} claims · ${moneyFull(d3.sum(rows,d=>d.claim_amount))}`;
+  document.getElementById("pageinfo").textContent = `Page ${state.page+1} of ${pages}`;
+  document.getElementById("prev").disabled = state.page===0; document.getElementById("next").disabled = state.page>=pages-1;
+}
+})();
+</script>
 </body>
 </html>
